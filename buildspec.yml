@@ -1,0 +1,23 @@
+version: 0.2
+
+env:
+  variables:
+    # enables continuous integration settings where applicable
+    CI: true
+
+phases:
+  install:
+    commands:
+
+  pre_build:
+    commands:
+      # placeholder
+  build:
+    commands:
+      # placeholder
+  post_build:
+    commands:
+      # placeholder
+artifacts:
+  files:
+    - '**/*'
