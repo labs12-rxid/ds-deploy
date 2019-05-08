@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 application.py
+python3 /srv/www/flask/application.py
