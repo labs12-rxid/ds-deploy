@@ -1,0 +1,34 @@
+version: 0.0
+os: linux 
+files:
+  - source: /
+    destination: /srv/www/flask/
+# hooks:
+#   ApplicationStop:
+#     - location: ./bash/save.sh
+#       timeout: 300
+#       runas: ubuntu
+# # During the BeforeInstall deployment lifecycle event, run the commands 
+# #   in the script specified in "location".
+#   BeforeInstall:
+#     - location: 
+#       timeout: 300
+#       runas: ubuntu
+# # During the AfterInstall deployment lifecycle event, run the commands 
+# #   in the script specified in "location".
+#   AfterInstall:
+#     - location: ./bash/install.sh
+#       timeout: 300
+#       runas: ubuntu
+# # During the ApplicationStart deployment lifecycle event, run the commands 
+# #   in the script specified in "location".
+#   ApplicationStart:
+#     - location: ./bash/start.sh
+#       timeout: 300
+#       runas: ubuntu
+# # During the ValidateService deployment lifecycle event, run the commands 
+# #   in the script specified in "location".
+#   ValidateService:
+#     - location: 
+#       timeout: 300
+#       runas: ubuntu
