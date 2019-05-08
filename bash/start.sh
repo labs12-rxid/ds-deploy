@@ -1,2 +1,2 @@
 #!/bin/bash
-python3 /srv/www/flask/application.py
+gunicorn -b localhost:5000 application:application -D
