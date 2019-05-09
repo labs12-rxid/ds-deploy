@@ -22,12 +22,11 @@ from string import punctuation
 from collections import deque
 from dotenv import load_dotenv
 
-load_dotenv()
-chromedriver_path = os.getenv("chromedriver_path")
-headless = (os.getenv('headless') == 'False')
 headless = True
 print('headless', headless)
 
+chromedriver_path = "/usr/local/bin/chromedriver"
+#chromedriver_path = "./chromedriver"
 print('chromedriver_path', chromedriver_path)
 
 class ititle_contains(object):
@@ -137,95 +136,62 @@ class drugscom:
         return 0 # round       
 
     def mprint_is_equal(self, m1, m2):  # m1 is drugs.com mprint, m2 is DB mprint
-
             m1l = m1.lower()
             m2l = m2.lower()
             if m1l == m2l:
+                #             print('return True', m1l)
                 return True
-
+    #         print(f'm1l|{m1l}|  m2l|{m2l}|')
+            # code matching "xmg" to "x mg"
+    #         m1l = re.sub(r"(\s?mc?g)(?=$)", "", m1l)
+    #         m2l = re.sub(r"(\s?mc?g)(?=$)", "", m2l)
+    #         print(f'after sub m1l|{m1l}|  m2l|{m2l}|')
+    #         m1m = re.search(r"(mc?g)(?=$)", m1l)
+    #         m2m = re.search(r"(mc?g)(?=$)", m2l)
+    # #         m1m = re.find(r"(mg)(?=$)", m1l)
+    #         print('matches', m1m, m2m)
+    #         if (m1m != None) and (m2m != None) and (m1m.group(1) == m2m.group(1)):
+    #             m2l = m1l.replace(m1m.group(1), '').strip()
+    #             m2l = m2l.replace(m2m.group(1), '').strip()
             m1l = ''.join(c for c in m1l if c not in punctuation)
             m2l = ''.join(c for c in m2l if c not in punctuation)
             if m1l == m2l:
+                #             print('return True', m1l)
                 return True
     #         print('no match yet', m1l, m2l)
-
-            for i in range(3):
-                m1s = m1l.split()
-                m2s = m2l.split()               
-                if i == 1:
-                    m2s.insert(0, m2s[0]) # dup first word (usually company name)
-                elif i == 2:
-                    m2s.extend(m2s)  # dup MPRINTS on each side
-
-                for j in range(2):  
-
-                    print('m1s', m1s,'i',i,'j',j)
-                    print('m2s', m2s)
-                    if "".join(m1s) == "".join(m2s):
+            m1s = m1l.split()
+            m2s = m2l.split()
+            m2sLogo = m2l.split()
+            if "".join(m1s) == "".join(m2s):
+                #             print('returning true after dupped adjustments')
+                #             print('match',  "".join(m1s), "".join(m2s))
+                return True
+    #         print('not match',  "".join(m1s), "".join(m2s))
+    #         print('m1s', m1s, type(m1s), len(m1s), 'm2s', m2s, len(m2s))
+            if len(m1s) == len(m2s) + 1:
+                #             print('m2s befoe insert', m2s)
+                m2s.insert(0, m2s[0])  # drugs.com first word dupped
+                m2sLogo.insert(0, 'logo')  # drugs.com added first word of 'logo'
+    #             print('m2s after insert', m2s)
+    #         print('after +1 test')
+            else:
+                if len(m1s) == 2 * len(m2s):  # drugs.com entire mprint dupped
+                    m2s.extend(m2s)
+            if "".join(m1s) == "".join(m2s):
+                #             print('returning true after dupped adjustments')
+                #             print('match',  "".join(m1s), "".join(m2s))
+                return True
+    #         print('not match',  "".join(m1s), "".join(m2s))
+    #         print('after dupped adjustments and no match', " ".join(m1s), " ".join(m2s))
+            if len(m1s) == len(m2s):  # test every possible starting word (don't know where left/right break is)
+                m2sq = deque(m2s)
+                m1ss = "".join(m1l)
+                for _ in range(len(m2s) - 1):
+                    l = m2sq.popleft()
+                    m2sq.append(l)
+                    if m1ss == "".join(m2sq):
                         return True
-
-              # test every possible starting word (don't know where left/right break is)
-                    m2sq = deque(m2s)
-                    m1ss = "".join(m1s)
-                    for _ in range(len(m2s) - 1):
-                        l = m2sq.popleft()
-                        m2sq.append(l)
-                        if j == 1:
-                            m2sq.insert(0,'logo')
-                        print('rotate',m1ss,m2sq)
-                        if m1ss == "".join(m2sq):
-                            return True
-                        if j == 1:
-                            m2sq.popleft() # remove 'logo' 
             return False
-
-    def select_color(self, color_code):
-        color_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='color-select']")
-        print('color_elem', color_elem)
-        color = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='color-select']")))
-        # time.sleep(1)
-        color.send_keys(Keys.RETURN)
-        # color.click()
-        print('color.click')
-
-        # self.wait.until(EC.element_to_be_clickable(
-        #     (By.XPATH, "//input[@type='submit']")))
-        target_color_elem = color_elem.find_element(
-            By.XPATH, f"//option[@value={color_code}]")
-        print('target_color_elem found', target_color_elem)  
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView();", target_color_elem)
-        target_color_elem = color_elem.find_element(
-            By.XPATH, f"//option[@value={color_code}]")
-        print('target_color_elem after scroll\n', target_color_elem)  
-        print('scroll complete')
-        self.driver.execute_script(
-            "arguments[0].click();", target_color_elem)            
-        # time.sleep(2.5)
-        print('color click complete')
-
-    def select_shape(self, shape_code):
-        shape_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='shape-select']")
-        print('shape_elem', shape_elem)
-        shape = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='shape-select']")))
-        # time.sleep(1)
-        shape.send_keys(Keys.RETURN)        
-        target_shape_elem = shape_elem.find_element(
-            By.XPATH, f"//option[@value={shape_code}]")
-        print('target_shape_elem found', target_shape_elem)  
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView();", target_shape_elem)
-        target_shape_elem = shape_elem.find_element(
-            By.XPATH, f"//option[@value={shape_code}]")
-        print('target_shape_elem after scroll\n', target_shape_elem)  
-        print('shape scroll complete')
-        self.driver.execute_script(
-            "arguments[0].click();", target_shape_elem)            
-        # time.sleep(2.5)
-        print('shape click complete')
-
 
     def get_data(self, ijo):
         pmprint = ijo['imprint']
@@ -265,13 +231,58 @@ class drugscom:
         # elem.send_keys(Keys.RETURN)
 
         # color may be covered with a drugs.com pulldown without this
-        side_target = self.wait.until(EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, "img[src='/img/pillid/example.png']")))
-        side_target.click()
+        shape = self.wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "select[id='shape-select']")))
+        shape.click()
+        time.sleep(1)
+        color_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='color-select']")
+        print('color_elem', color_elem)
+        color = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='color-select']")))
+        time.sleep(1)
+        color.send_keys(Keys.RETURN)
+        # color.click()
+        print('color.click')
 
-        self.select_color(color_code)
-        self.select_shape(shape_code)
+        # self.wait.until(EC.element_to_be_clickable(
+        #     (By.XPATH, "//input[@type='submit']")))
+        target_color_elem = color_elem.find_element(
+            By.XPATH, f"//option[@value={color_code}]")
+        print('target_color_elem found', target_color_elem)  
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView();", target_color_elem)
+        target_color_elem = color_elem.find_element(
+            By.XPATH, f"//option[@value={color_code}]")
+        print('target_color_elem after scroll\n', target_color_elem)  
+        print('scroll complete')
+        self.driver.execute_script(
+            "arguments[0].click();", target_color_elem)            
+        # time.sleep(2.5)
+        print('color click complete')
 
+
+        shape_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='shape-select']")
+        print('shape_elem', shape_elem)
+        shape = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='shape-select']")))
+        time.sleep(1)
+        shape.send_keys(Keys.RETURN)
+        # color.click()
+        print('color.click')
+
+        target_shape_elem = shape_elem.find_element(
+            By.XPATH, f"//option[@value={shape_code}]")
+        print('target_shape_elem found', target_shape_elem)  
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView();", target_shape_elem)
+        target_color_elem = color_elem.find_element(
+            By.XPATH, f"//option[@value={shape_code}]")
+        print('target_shape_elem after scroll\n', target_shape_elem)  
+        print('shape scroll complete')
+        self.driver.execute_script(
+            "arguments[0].click();", target_shape_elem)            
+        # time.sleep(2.5)
+        print('shape click complete')
         # if the python way of clicking submit works use it, otherwise use the JavaScript way
         try:
             elem = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']")))
@@ -316,13 +327,11 @@ class drugscom:
 #             print('soup breaking out of imgs loop')
             break
 
-        try:       
+        try:
+           
             elem = self.wait.until(
                 EC.element_to_be_clickable((By.LINK_TEXT, 'Search Again')))
             elem.click()
-            if headless == False:  
-                self.select_color(color_code)  # for testing color select
-                self.select_shape(shape_code)  # for testing shape select
         except:
             pass
         if a == None:
@@ -373,9 +382,6 @@ class drugscom:
                 #                   print('img', img)
                 try:
                     s = img['src']
-                    # a = isoup.find_next('a', string='Side Effects')
-                    # self.ddriver.get(self.base + a['href'])
-
                     # #                       print('s',s)
                     #                     if s[0:14] == '/images/pills/':
                     #                          print('found img', s, ' mprint ', mprint)
@@ -392,18 +398,16 @@ class drugscom:
 #                 break
 #             print( mprint.lower(), pmprint.lower())
             i += i
-            return json.dumps(self.results, indent=4)
+            print('!!!!!!!!!!!! S U C C E S S !!!!!!!!!!!')
+            return self.results
 
     def reset(self):
-        del self.results
         self.results = []
 
     def close(self):
         self.driver.quit()
         self.ddriver.quit()
         self.nonmatch_unique_file.close()
-        del self.results
         
 #            <option value="1">Blue</option>
 #            <option value="2">Brown</option>        
-

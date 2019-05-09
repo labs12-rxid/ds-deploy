@@ -9,7 +9,7 @@ def query_sql_data(parameter_list):
     im_print = "'"+parameter_list.get('imprint')+"'"
     print (im_print)
     im_print = "'WATSON;151;4;mg'"
-    db_engine = db_connect()
+    db_engine = db_connect('aws.rxidds.pwd')
     schema_name = 'rxid'
     table_name = 'rxid_meds_data'
     table_string = schema_name + '.' + table_name 
@@ -28,34 +28,28 @@ def query_sql_data(parameter_list):
                     setid
                     FROM """ + table_string + """ WHERE splimprint LIKE """ + im_print + """
             LIMIT 25;"""
-
     results = db_engine.execute(query).fetchall()
-    # Passing SQL query into a Pandas DF
     df = pd.DataFrame(results, columns=['author', 'imprint', 'image_id', 'medicine_name', 'size', 'color_text', 'shape_text', 'product_code', 'DEA_schedule', 'score', 'setid' ])
-    # Adding '.jpg' to image_id's
-    df.loc[df['image_id'] != None, 'image_id'] += '.jpg'
-    # Passing DF to JSON
     results_json = df.to_json(orient='records')
-    
     return results_json
 
 
 #  ____________  CONNECT TO DATABASE ___________________
-def db_connect(): # pwd_file
+def db_connect(pwd_file): 
     # __ Connect to AWS-RDS(postgres) (SQLalchemy.create_engine) ____
-    dbname = 'rxidDS'
-    user = 'rxidDS'
-    host = 'rxidds.cqqygklpjkea.us-east-2.rds.amazonaws.com'
-    passw = 'rxid_lambda'
-    # file = open(pwd_file, 'r')
-    # ctr = 1
-    # for line in file:
-    #     line = line.replace('\n', '')
-    #     if ctr == 1: dbname = line
-    #     if ctr == 2: user = line
-    #     if ctr == 3: host = line
-    #     if ctr == 4: passw = line
-    #     ctr = ctr + 1
+    dbname = ''
+    user = ''
+    host = ''
+    passw = ''
+    file = open(pwd_file, 'r')
+    ctr = 1
+    for line in file:
+        line = line.replace('\n', '')
+        if ctr == 1: dbname = line
+        if ctr == 2: user = line
+        if ctr == 3: host = line
+        if ctr == 4: passw = line
+        ctr = ctr + 1
     pgres_str = 'postgresql+psycopg2://'+user+':'+passw+'@'+host+'/'+dbname
     pgres_engine = create_engine(pgres_str)
     return pgres_engine
