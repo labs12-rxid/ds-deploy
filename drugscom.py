@@ -374,7 +374,8 @@ class drugscom:
                 try:
                     s = img['src']
                     a = isoup.find_next('a', string='Side Effects')
-                    self.ddriver.get(self.base + a['href'])
+                    print('side effect a',a)
+                    # self.ddriver.get(self.base + a['href'])
 
                     # #                       print('s',s)
                     #                     if s[0:14] == '/images/pills/':
@@ -392,15 +393,17 @@ class drugscom:
 #                 break
 #             print( mprint.lower(), pmprint.lower())
             i += i
-            return self.results
+            return json.dumps(self.results, indent=4)
 
     def reset(self):
+        del self.results
         self.results = []
 
     def close(self):
         self.driver.quit()
         self.ddriver.quit()
         self.nonmatch_unique_file.close()
+        del self.results
         
 #            <option value="1">Blue</option>
 #            <option value="2">Brown</option>        
