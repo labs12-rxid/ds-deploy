@@ -8,10 +8,10 @@ permissions:
     owner: ubuntu
     mode: "0755"
 hooks:
-#   ApplicationStop:
-#     - location: ./bash/save.sh
-#       timeout: 300
-#       runas: ubuntu
+  ApplicationStop:
+    - location: bash/stop.sh
+      timeout: 60
+      runas: root
 # # During the BeforeInstall deployment lifecycle event, run the commands 
 # #   in the script specified in "location".
 #   BeforeInstall:
