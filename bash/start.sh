@@ -1,2 +1,2 @@
 #!/bin/bash
-gunicorn -b localhost:5000 application:application -D
+gunicorn -b 0.0.0.0:8000 application -D
