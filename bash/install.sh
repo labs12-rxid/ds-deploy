@@ -1,2 +1,5 @@
 #!/bin/bash
-pip3 install -r /srv/www/pyapp/requirements.txt
+cd /srv/www/flask
+python3 -m venv venv
+. venv/bin/activate
+pip3 install -r requirements.txt
