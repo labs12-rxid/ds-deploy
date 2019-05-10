@@ -29,7 +29,7 @@ client=boto3.client('rekognition', region_name=reg_ion,
                     aws_secret_access_key=secret_key)
 
 # Text  Dectection Function
-def post_rekog(pic_url):
+async def post_rekog(pic_url):
     url = pic_url.get("image_file")
     urllib.request.urlretrieve(url, "./00000001.jpg")
     imageFile='./00000001.jpg'
