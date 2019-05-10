@@ -7,6 +7,7 @@ from joblib import load
 from flask_cors import CORS
 import pandas as pd
 import json
+import asyncio
 
 # ______ Module imports _____
 from drugscom import drugscom
@@ -53,11 +54,11 @@ def rxdata():
 
 # ________  /rekog/  route __________
 @application.route('/rekog', methods=['GET', 'POST'])
-def rekog():
+async def rekog():
     if request.method == 'POST':
         post_params = request.get_json(force=True)
         # https://s3.amazonaws.com/labs12-rxidstore/reference/00002-3228-30_391E1C80.jpg
-        output_info = post_rekog(post_params)
+        await output_info = post_rekog(post_params)
         return jsonify(output_info)
     else:
         return jsonify("YOU just made a GET request to /rekog")
