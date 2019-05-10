@@ -2,9 +2,9 @@ version: 0.0
 os: linux 
 files:
   - source: /
-    destination: /srv/www/pyapp
+    destination: /srv/www/flask
 permissions:
-  - object: /srv/www/pyapp
+  - object: /srv/www/flask
     owner: ubuntu
     mode: "0755"
 hooks:
