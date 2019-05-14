@@ -1,0 +1,22 @@
+version: 0.0
+os: linux 
+files:
+  - source: /
+    destination: /srv/www/flask
+permissions:
+  - object: /srv/www/flask
+    owner: ubuntu
+    mode: "0755"
+hooks:
+  AfterInstall:
+    - location: bash/install.sh
+      timeout: 60
+      runas: ubuntu
+  ApplicationStart:
+    - location: bash/start.sh
+      timeout: 60
+      runas: ubuntu
+  ValidateService:
+    - location: bash/check.sh
+      timeout: 60
+      runas: ubuntu
