@@ -38,7 +38,6 @@ def post_rekog(pic_json):
     all_text = []
     
     # Looping through each image
-    for imageURL in imageURL_list:
     ctr = 10000
     for imageURL in imageURL_list:
         if imageURL != "":
