@@ -22,6 +22,7 @@ from string import punctuation
 from collections import deque
 from dotenv import load_dotenv
 
+
 load_dotenv()
 chromedriver_path = os.getenv("chromedriver_path")
 headless = (os.getenv('headless') == 'False')
@@ -63,7 +64,7 @@ class drugscom:
         self.actions = ActionChains(self.driver)
         self.shape_codes = [
             { "id": 0, "name": 'Round', 'code': 24 },
-            { "id": 1, "name": 'Capsole', 'code': 5 },
+            { "id": 1, "name": 'Capsule', 'code': 5 },
             { "id": 2, "name": 'Oval',"code": 20 },
             { "id": 3, "name": 'Egg',"code":  9 },
             { "id": 4, "name": 'Barrel',"code": 1 },
@@ -180,11 +181,13 @@ class drugscom:
             return False
 
     def select_color(self, color_code):
+
         color_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='color-select']")
         print('color_elem', color_elem)
         color = self.wait.until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='color-select']")))
         # time.sleep(1)
+
         color.send_keys(Keys.RETURN)
         # color.click()
         print('color.click')
@@ -205,19 +208,25 @@ class drugscom:
         # time.sleep(2.5)
         print('color click complete')
 
+
     def select_shape(self, shape_code):
+
         shape_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='shape-select']")
         print('shape_elem', shape_elem)
         shape = self.wait.until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='shape-select']")))
+
         # time.sleep(1)
         shape.send_keys(Keys.RETURN)        
+r
         target_shape_elem = shape_elem.find_element(
             By.XPATH, f"//option[@value={shape_code}]")
         print('target_shape_elem found', target_shape_elem)  
         self.driver.execute_script(
             "arguments[0].scrollIntoView();", target_shape_elem)
+
         target_shape_elem = shape_elem.find_element(
+
             By.XPATH, f"//option[@value={shape_code}]")
         print('target_shape_elem after scroll\n', target_shape_elem)  
         print('shape scroll complete')
@@ -225,6 +234,7 @@ class drugscom:
             "arguments[0].click();", target_shape_elem)            
         # time.sleep(2.5)
         print('shape click complete')
+
 
 
     def make_mark_down(self, isoup) -> str:
@@ -367,7 +377,7 @@ class drugscom:
 
         self.select_color(color_code)
         self.select_shape(shape_code)
-
+        
         # if the python way of clicking submit works use it, otherwise use the JavaScript way
         try:
             elem = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']")))
@@ -393,7 +403,7 @@ class drugscom:
         for img in imgs:
             #             s = img['src']
             #                       print('s',s)
-            print('type!!', type(img.parent.parent))
+
             a = img.parent.parent('span', text='Pill Imprint:')[0].next_sibling.next_sibling
 #             print('a', a, type(a), a.text)
             mprint = a.text
@@ -413,6 +423,7 @@ class drugscom:
 #             print('soup breaking out of imgs loop')
             break
 
+
         try:       
             elem = self.wait.until(
                 EC.element_to_be_clickable((By.LINK_TEXT, 'Search Again')))
@@ -420,6 +431,7 @@ class drugscom:
             if headless == False:  
                 self.select_color(color_code)  # for testing color select
                 self.select_shape(shape_code)  # for testing shape select
+
         except:
             pass
         if a == None:
@@ -456,21 +468,26 @@ class drugscom:
                     brand = None
             # <dt class="pid-item-title pid-item-inline">Color:</dt>
             colors = isoup.find_all('dt', string='Color:')
+
             print('colors', colors)
             shapes = isoup.find_all('dt', string='Shape:')
             print('shapes', shapes)
+
 #             imgs = isoup.find_all('img')
 #             print('imgs len',len(imgs))
             imgs = isoup.findAll(
                 lambda tag: tag.name == "img" and
                 len(tag.attrs) >= 1 and
                 tag["src"][0:14] == '/images/pills/')
-            print('imgs length', len(imgs))
+
+#             print('imgs length', len(imgs))
+
 #             print('brand', brand, 'generic', generic, mprint, )
             for img in imgs:
                 #                   print('img', img)
                 try:
                     s = img['src']
+
                     a = isoup.find_all('a', string='Side Effects')[0]
                     # ul = isoup.find_all('ul', {'class': ['more-resources-list', 'more-resources-list-general']})
                     # print('len ul',len(ul))
@@ -494,12 +511,14 @@ class drugscom:
                     print(colors[i].next_sibling.text)
                     print(shapes[i].next_sibling.text)
 
+
                     # #                       print('s',s)
                     #                     if s[0:14] == '/images/pills/':
                     #                          print('found img', s, ' mprint ', mprint)
                     #                         self.img = base + s
                     self.results.append(
                         {'brand': brand, 'generic': generic, 'mprint': mprint, 'img': self.base + s,
+
                             'color': colors[i].next_sibling.text, 'shape': shapes[i].next_sibling.text,
                             'side effects': mark_down
                             })
@@ -508,6 +527,7 @@ class drugscom:
                 except Exception as e:
                     print('error appending', repr(e))
                     break
+
 #             if self.mprint_is_equal(mprint,pmprint) & appended: # works because drugs.com puts matching mprint first
 #                 break
 #             print( mprint.lower(), pmprint.lower())
@@ -516,14 +536,17 @@ class drugscom:
 
     def reset(self):
         del self.results
+
         self.results = []
 
     def close(self):
         self.driver.quit()
         self.ddriver.quit()
         self.nonmatch_unique_file.close()
+
         del self.results
         
 #            <option value="1">Blue</option>
 #            <option value="2">Brown</option>        
+
 
