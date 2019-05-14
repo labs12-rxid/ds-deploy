@@ -194,6 +194,7 @@ def verify_output(pgres_engine):
     schema_name = 'rxid'
     table_name = 'rxid_meds_data'
     table_string = schema_name + '.' + table_name 
+
     im_print = "'WATSON;151;4;mg'"
 
     query = """

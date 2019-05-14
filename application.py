@@ -7,20 +7,19 @@ from joblib import load
 from flask_cors import CORS
 import pandas as pd
 import json
+import asyncio
 
 # ______ Module imports _____
 from drugscom import drugscom
 from rxid_util import parse_input
-from rds_lib import db_connect, query_sql_data, query_from_rekog
+from rds_lib import db_connect, query_sql_data, verify_output
 from rekog import post_rekog
 
+drugs_com = drugscom()
 
 """ create + config Flask app obj """
 application = Flask(__name__)
 CORS(application)
-
-drugs_com = drugscom()
-
 
 # ______________ R O U T E S  _____________________
 # ________ / HOME __________
@@ -55,13 +54,12 @@ def rxdata():
 
 # ________  /rekog/  route __________
 @application.route('/rekog', methods=['GET', 'POST'])
-def rekog():
+async def rekog():
     if request.method == 'POST':
         post_params = request.get_json(force=True)
         # https://s3.amazonaws.com/labs12-rxidstore/reference/00002-3228-30_391E1C80.jpg
-        rekog_info = post_rekog(post_params)
-        output_info = query_from_rekog(rekog_info)
-        return output_info
+        await output_info = post_rekog(post_params)
+        return jsonify(output_info)
     else:
         return jsonify("YOU just made a GET request to /rekog")
 
