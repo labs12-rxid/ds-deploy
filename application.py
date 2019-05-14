@@ -8,6 +8,11 @@ from flask_cors import CORS
 import pandas as pd
 import json
 import asyncio
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 # ______ Module imports _____
 from drugscom import drugscom
