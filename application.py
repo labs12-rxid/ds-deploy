@@ -27,7 +27,7 @@ CORS(application)
 def index():
     return render_template('base.html', title='Home')
 
-# ________  /indentify/  route __________
+# ________  /identify/  route __________
 # __ input  {'imprint' : 'M370',  'color' : 1,  'shape' : 6}    
 @application.route('/identify', methods=['GET', 'POST'])
 def identify():
@@ -72,7 +72,6 @@ def nnet():
     else:
         return jsonify("YOU just made a GET request to /nnet")
 
-
 # ___________________ FUNCTIONS ________________________________
 def get_drugscom(query_string):
     out_put = ''
@@ -90,6 +89,7 @@ def get_drugscom(query_string):
 # __________ M A I N ________________________
 if __name__ == '__main__':
     application.run(debug=False)
+
 
     # --- browser debugging
     # application.run(debug=True)
