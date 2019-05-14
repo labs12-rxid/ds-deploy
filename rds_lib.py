@@ -2,6 +2,10 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from sqlalchemy import create_engine
 import pandas as pd
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 shape_codes = [
         { "id": 0, "name": 'Round', 'code': 24 },
@@ -170,19 +174,11 @@ def query_sql_data(parameter_list):
 #  ____________  CONNECT TO DATABASE ___________________
 def db_connect(pwd_file): 
     # __ Connect to AWS-RDS(postgres) (SQLalchemy.create_engine) ____
-    dbname = ''
-    user = ''
-    host = ''
-    passw = ''
-    file = open(pwd_file, 'r')
-    ctr = 1
-    for line in file:
-        line = line.replace('\n', '')
-        if ctr == 1: dbname = line
-        if ctr == 2: user = line
-        if ctr == 3: host = line
-        if ctr == 4: passw = line
-        ctr = ctr + 1
+    dbname = os.getenv("DS_DB_NAME")
+    user = os.getenv("DS_DB_USER")
+    host = os.getenv("DS_DB_HOST")
+    passw = os.getenv("DS_DB_PASSWORD")
+
     pgres_str = 'postgresql+psycopg2://'+user+':'+passw+'@'+host+'/'+dbname
     pgres_engine = create_engine(pgres_str)
     return pgres_engine
