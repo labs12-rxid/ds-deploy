@@ -157,7 +157,7 @@ def query_sql_data(parameter_list):
         query = query +" medicine_name LIKE '%%"+pill_name.upper()+"%%'"
         ctr +=1
 
-    query = query + " LIMIT 40;"       
+    query = query + " LIMIT 25;"       
     """
         WHERE splimprint  LIKE ''       im_print
         AND splshape_text LIKE 'OVAL'   shape_text
