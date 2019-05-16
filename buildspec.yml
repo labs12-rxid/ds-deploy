@@ -21,15 +21,10 @@ phases:
   post_build:
     commands:
       - ./venv/bin/gunicorn -b localhost:8000 application -D
-      - sleep 1
-      - ./bash/find_gunicorn.sh
-      - sleep 1
-      - curl -4 'http://localhost:8000'
-      - sleep 1
-      - curl localhost:8000/rekog
-      - sleep 1
-      - curl localhost:8000/rxdata
-      - sleep 1
+      #- ./bash/find_gunicorn.sh
+      - curl localhost:8000
+      - ./bash/test_rekog.sh
+      - ./bash/test_rxdata.sh
 artifacts:
   files:
     - '**/*'
