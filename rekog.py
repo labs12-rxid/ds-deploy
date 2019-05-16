@@ -1,4 +1,5 @@
 '''
+
 Python Script to detect imprinted text on pill images using AWS Rekognition.
 Set up for passing just 1 image. 
 Will need to be refactored to pass 2 images based on URL or JSON given by WEB.
@@ -26,7 +27,7 @@ client=boto3.client('rekognition', region_name=reg_ion,
                     aws_secret_access_key=secret_key)
 
 # Text  Dectection Function
-# Text  Dectection Function
+
 def post_rekog(pic_json):
     
     # Getting list of image file names
@@ -89,13 +90,15 @@ def post_rekog(pic_json):
     unique_list = list(set(unique_list))
     # print(len(unique_list))
 
-    if len(unique_list) == 0:
-        unique_list = ['Unable to detect text']
+    #if len(unique_list) == 0:
+    #    unique_list = ['Unable to detect text']
+
 
     # Return 'unique_list'    
     return (unique_list)
 
 
 # __________ M A I N ________________________
-if __name__ == '__main__':
-   print('Main')
+
+#if __name__ == '__main__':
+#   print('hello')
