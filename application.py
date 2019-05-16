@@ -69,7 +69,7 @@ def rekog():
     if request.method == 'POST':
         post_params = request.get_json(force=True)
         rekog_info = post_rekog(post_params)
-        await output_info = query_from_rekog(rekog_info)
+        output_info = query_from_rekog(rekog_info)
         return jsonify(output_info)
 
     else:
