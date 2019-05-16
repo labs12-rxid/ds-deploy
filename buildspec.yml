@@ -14,10 +14,18 @@ phases:
       # placeholder
   build:
     commands:
-      # placeholder
+      - python3 -m venv venv
+      - . venv/bin/activate
+      - pip3 install -r requirements.txt
+      - gunicorn -b 0.0.0.0:8000 application -D --forwarded-allow-ips "*"
   post_build:
     commands:
-      # placeholder
+      - curl localhost:8000
+      - sleep 1
+      - curl localhost:8000/rekog
+      - sleep 1
+      - curl localhost:8000/rxdata
+      - sleep 1
 artifacts:
   files:
     - '**/*'
