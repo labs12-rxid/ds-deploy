@@ -9,6 +9,11 @@ from flask_cors import CORS
 import pandas as pd
 import json
 import asyncio
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 # ______ Module imports _____
 from drugscom import drugscom
@@ -22,6 +27,7 @@ from rekog import post_rekog
 """ create + config Flask app obj """
 application = Flask(__name__)
 CORS(application)
+
 
 drugs_com = drugscom()
 
@@ -59,12 +65,13 @@ def rxdata():
 
 # ________  /rekog/  route __________
 @application.route('/rekog', methods=['GET', 'POST'])
-async def rekog():
+def rekog():
     if request.method == 'POST':
         post_params = request.get_json(force=True)
         rekog_info = post_rekog(post_params)
         await output_info = query_from_rekog(rekog_info)
         return jsonify(output_info)
+
     else:
         return jsonify("YOU just made a GET request to /rekog")
 
@@ -94,3 +101,15 @@ def get_drugscom(query_string):
 # __________ M A I N ________________________
 if __name__ == '__main__':
     application.run(debug=False)
+
+    # --- browser debugging
+    # application.run(debug=True)
+
+    #  --- for terminal debugging ------
+    # results = get_drugscom()
+    # print(results)
+# __________________________________________________
+# to launch from terminal : 
+#    change line 25 to  application.run(debug=True)
+#    cd to folder (where application.py resides)
+#    run >python application.py 
