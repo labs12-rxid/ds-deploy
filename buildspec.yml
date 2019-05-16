@@ -20,7 +20,7 @@ phases:
       - printenv
   post_build:
     commands:
-      - ./venv/bin/gunicorn -b localhost:8000 application
+      - ./venv/bin/gunicorn -b localhost:8000 application -D
       - sleep 1
       - ./bash/find_gunicorn.sh
       - sleep 1

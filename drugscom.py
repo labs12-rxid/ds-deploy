@@ -218,7 +218,7 @@ class drugscom:
 
         # time.sleep(1)
         shape.send_keys(Keys.RETURN)        
-r
+        
         target_shape_elem = shape_elem.find_element(
             By.XPATH, f"//option[@value={shape_code}]")
         print('target_shape_elem found', target_shape_elem)  
