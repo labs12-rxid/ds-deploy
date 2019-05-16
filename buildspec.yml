@@ -14,10 +14,17 @@ phases:
       # placeholder
   build:
     commands:
-      # placeholder
+      - python3 -m venv venv
+      - . venv/bin/activate
+      - pip3 install -r requirements.txt
+      - printenv
   post_build:
     commands:
-      # placeholder
+      - ./venv/bin/gunicorn -b localhost:8000 application -D
+      #- ./bash/find_gunicorn.sh
+      - curl localhost:8000
+      - ./bash/test_rekog.sh
+      - ./bash/test_rxdata.sh
 artifacts:
   files:
     - '**/*'

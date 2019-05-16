@@ -67,7 +67,7 @@ dautil==0.0.1b1
 deap==1.2.2
 decorator==4.3.2
 distributed==1.25.3
-django==2.1.5
+django>=2.1.6
 dnspython==1.16.0
 docutils==0.14
 editdistance==0.4
@@ -121,7 +121,7 @@ jdcal==1.4
 jedi==0.13.2
 jeepney==0.4
 jieba3k==0.35.1
-jinja2==2.10
+jinja2>=2.10.1
 joblib==0.13.1
 jsonpickle==1.1
 jsonschema==2.6.0
@@ -172,7 +172,7 @@ networkx==2.2
 newspaper3k==0.2.8
 nltk==3.4
 nose==1.3.7
-notebook==5.7.4
+notebook>=5.7.8
 numba==0.42.0
 numexpr==2.6.9
 numpy==1.16.1
@@ -254,7 +254,7 @@ python-dotenv==0.10.1
 python-slugify==2.0.1
 pytz==2018.9
 pywavelets==1.0.1
-pyyaml==3.13
+pyyaml>=5.0
 pyzmq==17.1.3
 qtawesome==0.5.6
 qtconsole==4.4.3
@@ -296,7 +296,7 @@ sphinx==1.8.4
 sphinxcontrib-websupport==1.1.0
 spyder==3.3.2
 spyder-kernels==0.4.2
-sqlalchemy==1.2.17
+sqlalchemy>=1.3.0
 statsmodels==0.9.0
 stopit==1.1.2
 sympy==1.3

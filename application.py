@@ -16,7 +16,7 @@ load_dotenv()
 
 
 # ______ Module imports _____
-from drugscom import drugscom
+# from drugscom import drugscom
 from rxid_util import parse_input
 from rds_lib import db_connect, query_sql_data, query_from_rekog
 from rekog import post_rekog
@@ -29,7 +29,7 @@ application = Flask(__name__)
 CORS(application)
 
 
-drugs_com = drugscom()
+#drugs_com = drugscom()
 
 
 # ______________ R O U T E S  _____________________
@@ -40,14 +40,14 @@ def index():
 
 # ________  /identify/  route __________
 # __ input  {'imprint' : 'M370',  'color' : 1,  'shape' : 6}    
-@application.route('/identify', methods=['GET', 'POST'])
-def identify():
-    if request.method == 'POST':
-        post_params = request.get_json(force=True)
-        results = get_drugscom(post_params)
-        return results
-    else:
-        return jsonify("GET request to /identify :")
+# @application.route('/identify', methods=['GET', 'POST'])
+# def identify():
+#     if request.method == 'POST':
+#         post_params = request.get_json(force=True)
+#         results = get_drugscom(post_params)
+#         return results
+#     else:
+#         return jsonify("GET request to /identify :")
 
 
 # ________  /rxdata/  route __________
