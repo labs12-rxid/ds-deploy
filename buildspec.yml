@@ -17,13 +17,14 @@ phases:
       - python3 -m venv venv
       - . venv/bin/activate
       - pip3 install -r requirements.txt
+      - printenv
   post_build:
     commands:
-      - ./venv/bin/gunicorn -b localhost:8000 application -D --forwarded-allow-ips "*"
+      - ./venv/bin/gunicorn -b localhost:8000 application
       - sleep 1
-      - ./bash/ps_grep_gunicorn.sh
+      - ./bash/find_gunicorn.sh
       - sleep 1
-      - curl localhost:8000
+      - curl -4 'http://localhost:8000'
       - sleep 1
       - curl localhost:8000/rekog
       - sleep 1
