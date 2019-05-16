@@ -22,11 +22,13 @@ from string import punctuation
 from collections import deque
 from dotenv import load_dotenv
 
+
+load_dotenv()
+chromedriver_path = os.getenv("chromedriver_path")
+headless = (os.getenv('headless') == 'False')
 headless = True
 print('headless', headless)
 
-chromedriver_path = "/usr/local/bin/chromedriver"
-#chromedriver_path = "./chromedriver"
 print('chromedriver_path', chromedriver_path)
 
 class ititle_contains(object):
@@ -136,62 +138,200 @@ class drugscom:
         return 0 # round       
 
     def mprint_is_equal(self, m1, m2):  # m1 is drugs.com mprint, m2 is DB mprint
+
             m1l = m1.lower()
             m2l = m2.lower()
             if m1l == m2l:
-                #             print('return True', m1l)
                 return True
-    #         print(f'm1l|{m1l}|  m2l|{m2l}|')
-            # code matching "xmg" to "x mg"
-    #         m1l = re.sub(r"(\s?mc?g)(?=$)", "", m1l)
-    #         m2l = re.sub(r"(\s?mc?g)(?=$)", "", m2l)
-    #         print(f'after sub m1l|{m1l}|  m2l|{m2l}|')
-    #         m1m = re.search(r"(mc?g)(?=$)", m1l)
-    #         m2m = re.search(r"(mc?g)(?=$)", m2l)
-    # #         m1m = re.find(r"(mg)(?=$)", m1l)
-    #         print('matches', m1m, m2m)
-    #         if (m1m != None) and (m2m != None) and (m1m.group(1) == m2m.group(1)):
-    #             m2l = m1l.replace(m1m.group(1), '').strip()
-    #             m2l = m2l.replace(m2m.group(1), '').strip()
+
             m1l = ''.join(c for c in m1l if c not in punctuation)
             m2l = ''.join(c for c in m2l if c not in punctuation)
             if m1l == m2l:
-                #             print('return True', m1l)
                 return True
     #         print('no match yet', m1l, m2l)
-            m1s = m1l.split()
-            m2s = m2l.split()
-            m2sLogo = m2l.split()
-            if "".join(m1s) == "".join(m2s):
-                #             print('returning true after dupped adjustments')
-                #             print('match',  "".join(m1s), "".join(m2s))
-                return True
-    #         print('not match',  "".join(m1s), "".join(m2s))
-    #         print('m1s', m1s, type(m1s), len(m1s), 'm2s', m2s, len(m2s))
-            if len(m1s) == len(m2s) + 1:
-                #             print('m2s befoe insert', m2s)
-                m2s.insert(0, m2s[0])  # drugs.com first word dupped
-                m2sLogo.insert(0, 'logo')  # drugs.com added first word of 'logo'
-    #             print('m2s after insert', m2s)
-    #         print('after +1 test')
-            else:
-                if len(m1s) == 2 * len(m2s):  # drugs.com entire mprint dupped
-                    m2s.extend(m2s)
-            if "".join(m1s) == "".join(m2s):
-                #             print('returning true after dupped adjustments')
-                #             print('match',  "".join(m1s), "".join(m2s))
-                return True
-    #         print('not match',  "".join(m1s), "".join(m2s))
-    #         print('after dupped adjustments and no match', " ".join(m1s), " ".join(m2s))
-            if len(m1s) == len(m2s):  # test every possible starting word (don't know where left/right break is)
-                m2sq = deque(m2s)
-                m1ss = "".join(m1l)
-                for _ in range(len(m2s) - 1):
-                    l = m2sq.popleft()
-                    m2sq.append(l)
-                    if m1ss == "".join(m2sq):
+
+            for i in range(3):
+                m1s = m1l.split()
+                m2s = m2l.split()               
+                if i == 1:
+                    m2s.insert(0, m2s[0]) # dup first word (usually company name)
+                elif i == 2:
+                    m2s.extend(m2s)  # dup MPRINTS on each side
+
+                for j in range(2):  
+
+                    # print('m1s', m1s,'i',i,'j',j)
+                    # print('m2s', m2s)
+                    if "".join(m1s) == "".join(m2s):
                         return True
+
+              # test every possible starting word (don't know where left/right break is)
+                    m2sq = deque(m2s)
+                    m1ss = "".join(m1s)
+                    for _ in range(len(m2s) - 1):
+                        l = m2sq.popleft()
+                        m2sq.append(l)
+                        if j == 1:
+                            m2sq.insert(0,'logo')
+                        # print('rotate',m1ss,m2sq)
+                        if m1ss == "".join(m2sq):
+                            return True
+                        if j == 1:
+                            m2sq.popleft() # remove 'logo' 
             return False
+
+    def select_color(self, color_code):
+
+        color_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='color-select']")
+        print('color_elem', color_elem)
+        color = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='color-select']")))
+        # time.sleep(1)
+
+        color.send_keys(Keys.RETURN)
+        # color.click()
+        print('color.click')
+
+        # self.wait.until(EC.element_to_be_clickable(
+        #     (By.XPATH, "//input[@type='submit']")))
+        target_color_elem = color_elem.find_element(
+            By.XPATH, f"//option[@value={color_code}]")
+        print('target_color_elem found', target_color_elem)  
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView();", target_color_elem)
+        target_color_elem = color_elem.find_element(
+            By.XPATH, f"//option[@value={color_code}]")
+        print('target_color_elem after scroll\n', target_color_elem)  
+        print('scroll complete')
+        self.driver.execute_script(
+            "arguments[0].click();", target_color_elem)            
+        # time.sleep(2.5)
+        print('color click complete')
+
+
+    def select_shape(self, shape_code):
+
+        shape_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='shape-select']")
+        print('shape_elem', shape_elem)
+        shape = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='shape-select']")))
+
+        # time.sleep(1)
+        shape.send_keys(Keys.RETURN)        
+r
+        target_shape_elem = shape_elem.find_element(
+            By.XPATH, f"//option[@value={shape_code}]")
+        print('target_shape_elem found', target_shape_elem)  
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView();", target_shape_elem)
+
+        target_shape_elem = shape_elem.find_element(
+
+            By.XPATH, f"//option[@value={shape_code}]")
+        print('target_shape_elem after scroll\n', target_shape_elem)  
+        print('shape scroll complete')
+        self.driver.execute_script(
+            "arguments[0].click();", target_shape_elem)            
+        # time.sleep(2.5)
+        print('shape click complete')
+
+
+
+    def make_mark_down(self, isoup) -> str:
+        markdown = ''
+        n = ''
+        try:
+            h1 = isoup.find_all('h1')[0]
+            title = h1.text
+            markdown += '<h1>' + title.strip() + '</h1>' + n
+            generic = None
+            try:
+                generic = h1.parent.p.i.text
+            except:
+                pass
+            if generic != None:
+                markdown += '<h2>Generic</h2> ' + generic + n
+        #     ins = isoup.findAll(
+        #         lambda tag: tag.name == "h2" and
+        #         tag.text == 'In Summary')[0] 
+            ins = isoup.find('h2', string='In Summary')
+        #     if ins == None:
+        #         print('ins == None')
+        # #         ins = isoup.find('h2', string='For the Consumer')
+        #         ins = isoup.find('h2')
+        #     print(f'ins.text |{ins.text}|')
+
+        #     print(type(ins))
+            p = None
+            if ins != None:
+                ins_ = ins.parent.find_all('b')[3].parent.text
+            #     print('ins_',ins_,type(ins_))
+                ins__ = ins_[6:].replace('may not', '<i>may not</i>')
+                markdown += '<p><h2>Note</h2></p> ' + ins__
+                ss =  "Common side effects of "
+                p = isoup.findAll(
+                    lambda tag: tag.name == "b" and
+                    len(tag.text) > len(ss) and
+                    tag.text[0:len(ss)] == ss)
+                if p != None:
+                    if len(p) > 0:
+                        p = p[0].parent
+                    else:
+                        p = None
+            if p != None:
+                markdown += '<h2>In Summary</h2>' + str(p) + n
+        #     p = p.parent.findAll(
+        #         lambda tag: tag.name == "h2" and
+        #         tag.text.index('For the Consumer') >= 0)[0].parent.find('p')
+                p = p.parent.find('h2', string="For the Consumer")
+               # <h2>For the Consumer</h2> 
+            if p == None:
+                ss = "For the Consumer"
+                try: 
+                    p = isoup.findAll(
+                        lambda tag: tag.name == "h2" and
+                        len(tag.text) >= len(ss) and
+                        tag.text.find(ss) >= 0)[0]
+                except:
+                    p = isoup.find('h2')
+                    print('For the Consumer not found in ', p.text)
+            markdown += str(p) + n
+            # Applies to tadalafil : oral tablet
+            markdown += '<p>' + p.parent.find_all('p')[4].text.replace('\n','') + '</p>' + n 
+        #     div = p.parent.find('div', 'class': ["contentAd contentAdM1 contentAdAlone"]>
+            markdown += '<p>' + p.parent.find_all('p')[5].text.replace('\n','') + '</p>' + n 
+            p6 = str(p.parent.find_all('p')[6])
+
+            if p6.find('\n') >= 0:
+                p6 = p6.replace('\n','') 
+
+            markdown += p6 + n
+            markdown += '<h3>Less Common</h3><ul>'
+            ul = p.parent.find_all('ul')[2]
+            for li in ul.find_all('li'):
+                markdown += '<li>' + li.text.replace('\n','') + '</li>' + n    
+            markdown += '</ul>'
+            markdown += "<h3>Incidence Not Known</h3><ul>"
+            ul = p.parent.find_all('ul')[3]
+            for li in ul.find_all('li'):
+                markdown += '<li>' + li.text.replace('\n','') + '</li>' + n    
+            markdown += '</ul>'
+            p = ul.next_sibling.next_sibling
+            markdown += str(p)
+            markdown += "<h3>More Common</h3><ul>"
+            ul = p.parent.find_all('ul')[3]   
+            for li in ul.find_all('li'):
+                markdown += '<li>' + li.text.replace('\n','') + '</li>' + n    
+            markdown += '</ul><h3>Less Common</h3><ul>'  
+            ul = p.parent.find_all('ul')[4]   
+            for li in ul.find_all('li'):
+                markdown += '<li>' + li.text.replace('\n','') + '</li>' + n    
+            markdown += '</ul>'
+        except Exception as e:
+            print('error making markdown', repr(e))
+            print(f'Error on line {sys.exc_info()[-1].tb_lineno}')
+            return None        
+        return markdown 
 
     def get_data(self, ijo):
         pmprint = ijo['imprint']
@@ -231,58 +371,13 @@ class drugscom:
         # elem.send_keys(Keys.RETURN)
 
         # color may be covered with a drugs.com pulldown without this
-        shape = self.wait.until(EC.element_to_be_clickable(
-            (By.CSS_SELECTOR, "select[id='shape-select']")))
-        shape.click()
-        time.sleep(1)
-        color_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='color-select']")
-        print('color_elem', color_elem)
-        color = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='color-select']")))
-        time.sleep(1)
-        color.send_keys(Keys.RETURN)
-        # color.click()
-        print('color.click')
+        side_target = self.wait.until(EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "img[src='/img/pillid/example.png']")))
+        side_target.click()
 
-        # self.wait.until(EC.element_to_be_clickable(
-        #     (By.XPATH, "//input[@type='submit']")))
-        target_color_elem = color_elem.find_element(
-            By.XPATH, f"//option[@value={color_code}]")
-        print('target_color_elem found', target_color_elem)  
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView();", target_color_elem)
-        target_color_elem = color_elem.find_element(
-            By.XPATH, f"//option[@value={color_code}]")
-        print('target_color_elem after scroll\n', target_color_elem)  
-        print('scroll complete')
-        self.driver.execute_script(
-            "arguments[0].click();", target_color_elem)            
-        # time.sleep(2.5)
-        print('color click complete')
-
-
-        shape_elem = self.driver.find_element(By.CSS_SELECTOR, "select[id='shape-select']")
-        print('shape_elem', shape_elem)
-        shape = self.wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "select[id='shape-select']")))
-        time.sleep(1)
-        shape.send_keys(Keys.RETURN)
-        # color.click()
-        print('color.click')
-
-        target_shape_elem = shape_elem.find_element(
-            By.XPATH, f"//option[@value={shape_code}]")
-        print('target_shape_elem found', target_shape_elem)  
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView();", target_shape_elem)
-        target_color_elem = color_elem.find_element(
-            By.XPATH, f"//option[@value={shape_code}]")
-        print('target_shape_elem after scroll\n', target_shape_elem)  
-        print('shape scroll complete')
-        self.driver.execute_script(
-            "arguments[0].click();", target_shape_elem)            
-        # time.sleep(2.5)
-        print('shape click complete')
+        self.select_color(color_code)
+        self.select_shape(shape_code)
+        
         # if the python way of clicking submit works use it, otherwise use the JavaScript way
         try:
             elem = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//input[@type='submit']")))
@@ -308,6 +403,7 @@ class drugscom:
         for img in imgs:
             #             s = img['src']
             #                       print('s',s)
+
             a = img.parent.parent('span', text='Pill Imprint:')[0].next_sibling.next_sibling
 #             print('a', a, type(a), a.text)
             mprint = a.text
@@ -327,11 +423,15 @@ class drugscom:
 #             print('soup breaking out of imgs loop')
             break
 
-        try:
-           
+
+        try:       
             elem = self.wait.until(
                 EC.element_to_be_clickable((By.LINK_TEXT, 'Search Again')))
             elem.click()
+            if headless == False:  
+                self.select_color(color_code)  # for testing color select
+                self.select_shape(shape_code)  # for testing shape select
+
         except:
             pass
         if a == None:
@@ -368,46 +468,85 @@ class drugscom:
                     brand = None
             # <dt class="pid-item-title pid-item-inline">Color:</dt>
             colors = isoup.find_all('dt', string='Color:')
-#             print('colors', colors)
+
+            print('colors', colors)
             shapes = isoup.find_all('dt', string='Shape:')
+            print('shapes', shapes)
+
 #             imgs = isoup.find_all('img')
 #             print('imgs len',len(imgs))
             imgs = isoup.findAll(
                 lambda tag: tag.name == "img" and
                 len(tag.attrs) >= 1 and
                 tag["src"][0:14] == '/images/pills/')
+
 #             print('imgs length', len(imgs))
+
 #             print('brand', brand, 'generic', generic, mprint, )
             for img in imgs:
                 #                   print('img', img)
                 try:
                     s = img['src']
+
+                    a = isoup.find_all('a', string='Side Effects')[0]
+                    # ul = isoup.find_all('ul', {'class': ['more-resources-list', 'more-resources-list-general']})
+                    # print('len ul',len(ul))
+                    # if len(ul) > 0:
+                    #     li = ul[0].find('li')
+                    #     if li != None:
+                    #         print('li text', li.text)
+        
+                    # with open('isoup.html',"wt") as File:
+                    #     File.write(isoup.prettify())
+                    
+                    print('side effects a href',a['href'])
+                    self.ddriver.get(self.base + a['href'])
+                    print('side effects page title', self.ddriver.title)
+                    WebDriverWait(self.ddriver, 100).until(ititle_contains('Side Effects in Detail'))
+                    isoup = BeautifulSoup(self.ddriver.page_source, 'html.parser')
+                    # with open('./html/' + generic + '.html',"wt") as File:
+                    #     File.write(isoup.prettify())
+                    mark_down = self.make_mark_down(isoup)
+                    print('mark_down i:', i)
+                    print(colors[i].next_sibling.text)
+                    print(shapes[i].next_sibling.text)
+
+
                     # #                       print('s',s)
                     #                     if s[0:14] == '/images/pills/':
                     #                          print('found img', s, ' mprint ', mprint)
                     #                         self.img = base + s
                     self.results.append(
                         {'brand': brand, 'generic': generic, 'mprint': mprint, 'img': self.base + s,
-                            'color': colors[i].next_sibling.text, 'shape': shapes[i].next_sibling.text})
-                    print(f'appending {brand} {s}')
+
+                            'color': colors[i].next_sibling.text, 'shape': shapes[i].next_sibling.text,
+                            'side effects': mark_down
+                            })
+                    print(f'appending {brand} {s} {len(self.results)} results' )
                     break
                 except Exception as e:
                     print('error appending', repr(e))
-                    pass
+                    break
+
 #             if self.mprint_is_equal(mprint,pmprint) & appended: # works because drugs.com puts matching mprint first
 #                 break
 #             print( mprint.lower(), pmprint.lower())
             i += i
-            print('!!!!!!!!!!!! S U C C E S S !!!!!!!!!!!')
-            return self.results
+            return json.dumps(self.results, indent=4)
 
     def reset(self):
+        del self.results
+
         self.results = []
 
     def close(self):
         self.driver.quit()
         self.ddriver.quit()
         self.nonmatch_unique_file.close()
+
+        del self.results
         
 #            <option value="1">Blue</option>
 #            <option value="2">Brown</option>        
+
+
