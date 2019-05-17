@@ -140,7 +140,7 @@ def db_connect():
     user = os.getenv("DS_DB_USER")
     host = os.getenv("DS_DB_HOST")
     passw = os.getenv("DS_DB_PASSWORD")
-    pgres_str = 'postgresql + psycopg2://' + user + ':' + passw + '@' + host + '/' + dbname
+    pgres_str = 'postgresql+psycopg2://' + user + ':' + passw + '@' + host + '/' + dbname
     pgres_engine = create_engine(pgres_str)
     return pgres_engine
 
