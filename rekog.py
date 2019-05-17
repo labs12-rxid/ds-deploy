@@ -99,6 +99,9 @@ def post_rekog(pic_json):
 
 
 # __________ M A I N ________________________
+if __name__ == '__main__':
+    data = {"image_locations": ["https://raw.githubusercontent.com/ed-chin-git/ed-chin-git.github.io/master/sample_pill_image.jpg", ""]}
+    print(post_rekog(data))
+    
 
-#if __name__ == '__main__':
-#   print('hello')
+
