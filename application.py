@@ -11,9 +11,6 @@ import asyncio
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
-
 # ______ Module imports _____
 # from drugscom import drugscom
 from rxid_util import parse_input
@@ -21,10 +18,11 @@ from rds_lib import db_connect, query_sql_data, query_from_rekog, get_colors_sha
 from rekog import post_rekog
 
 """ create + config Flask app obj """
+load_dotenv()
 application = Flask(__name__)
 CORS(application)
+# drugs_com = drugscom()
 
-#drugs_com = drugscom()
 
 # ______________ R O U T E S  _____________________
 # ________ / HOME __________
@@ -33,7 +31,7 @@ def index():
     return render_template('base.html', title='Home')
 
 # ________  /identify/  route __________
-# __ input  {'imprint' : 'M370',  'color' : 1,  'shape' : 6}    
+# __ input  {"imprint": "M370",  "color": 1,  "shape": 6}
 # @application.route('/identify', methods=['GET', 'POST'])
 # def identify():
 #     if request.method == 'POST':
@@ -45,7 +43,7 @@ def index():
 
 
 # ________  /rxdata/  route __________
-# __ {'imprint' : 'M370',  'color' : 1,  'shape' : 6}    
+# __ {'imprint' : 'M370',  'color' : 1,  'shape' : 6}
 @application.route('/rxdata', methods=['GET', 'POST'])
 def rxdata():
     if request.method == 'POST':
@@ -57,7 +55,9 @@ def rxdata():
         out_put = get_colors_shapes()
         return jsonify(out_put)
 
+
 # ________  /rekog/  route __________
+# {"image_locations": ["some_valid","image_urls"]}
 @application.route('/rekog', methods=['GET', 'POST'])
 def rekog():
     if request.method == 'POST':
@@ -68,6 +68,7 @@ def rekog():
     else:
         return jsonify("YOU just made a GET request to /rekog")
 
+
 # ________  /nnet/  route __________
 @application.route('/nnet', methods=['GET', 'POST'])
 def nnet():
@@ -76,6 +77,7 @@ def nnet():
         return jsonify(post_params)
     else:
         return jsonify("YOU just made a GET request to /nnet")
+
 
 # ___________________ FUNCTIONS ________________________________
 def get_drugscom(query_string):
@@ -86,7 +88,7 @@ def get_drugscom(query_string):
     except Exception as e:
         out_put = f'error: {e}'
     finally:
-        if drugs_com is not None: 
+        if drugs_com is not None:
             drugs_com.close()
     return out_put
 
@@ -95,7 +97,9 @@ def get_drugscom(query_string):
 if __name__ == '__main__':
     application.run(debug=False)
 
-    # post_params = data = {"image_locations": ["https://raw.githubusercontent.com/ed-chin-git/ed-chin-git.github.io/master/sample_pill_image.jpg", ""]}
+    # post_params = data = {"image_locations":
+    # ["https://raw.githubusercontent.com/ed-chin-git/ed-chin-git.github.io/master/sample_pill_image.jpg",
+    # ""]}
     # rekog_info = post_rekog(post_params)
     # output_info = query_from_rekog(rekog_info)
     # print(output_info)
@@ -107,7 +111,7 @@ if __name__ == '__main__':
     # results = get_drugscom()
     # print(results)
 # __________________________________________________
-# to launch from terminal : 
+# to launch from terminal:
 #    change line 25 to  application.run(debug=True)
 #    cd to folder (where application.py resides)
-#    run >python application.py 
+#    run >python application.py
