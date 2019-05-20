@@ -49,7 +49,7 @@ def rxdata():
     if request.method == 'POST':
         post_params = request.get_json(force=True)
         output_info = query_sql_data(post_params)
-        return jsonify(output_info)
+        return output_info
 
     else:
         out_put = get_colors_shapes()
@@ -64,7 +64,7 @@ def rekog():
         post_params = request.get_json(force=True)
         rekog_info = post_rekog(post_params)
         output_info = query_from_rekog(rekog_info)
-        return jsonify(output_info)
+        return output_info
     else:
         return jsonify("YOU just made a GET request to /rekog")
 
