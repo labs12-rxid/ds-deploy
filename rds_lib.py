@@ -9,7 +9,6 @@ import os
 
 load_dotenv()
 
-
 # ______query_from rekog __________
 def query_from_rekog(rekog_results):
     if len(rekog_results) > 1:
