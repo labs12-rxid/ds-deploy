@@ -73,7 +73,7 @@ def rekog():
         # https://s3.amazonaws.com/labs12-rxidstore/reference/00002-3228-30_391E1C80.jpg
         rekog_info = post_rekog(post_params)
         output_info = query_from_rekog(rekog_info)
-        return output_info
+        return jsonify(output_info)
     else:
         return jsonify("YOU just made a GET request to /rekog")
 
