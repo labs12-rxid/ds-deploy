@@ -8,10 +8,6 @@ from flask_cors import CORS
 import pandas as pd
 import json
 
-im==port asyncio
-from dotenv import load_dotenv
-import os
-
 # ______ Module imports _____
 from rxid_util import parse_input
 from rds_lib import db_connect, query_sql_data, query_from_rekog
@@ -19,7 +15,6 @@ from rekog import post_rekog
 
 
 """ create + config Flask app obj """
-load_dotenv()
 application = Flask(__name__)
 CORS(application)
 
@@ -34,7 +29,7 @@ CORS(application)
 #     if drugs_com != None:
 #         print('closing drugs_com')
 #         drugs_com.close()
-
+# import atexit
 # atexit.register(close_drugs_com)
 
 # ______________ R O U T E S  _____________________
