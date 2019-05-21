@@ -57,8 +57,9 @@ def add_contrast(image_path):
     print('add_contrast: converted to RGB :', image_path)
 
     return image_contrast
+
 # Text  Detection Function
-def post_rekog_with_filter(pic_json, elem_limit=3, con_fidence=70):
+def post_rekog_with_filter(pic_json, con_fidence=70):
    
     # -------------Getting list of image file names -------------
     imageURL_list = pic_json.get("image_locations")
@@ -177,7 +178,7 @@ def post_rekog_with_filter(pic_json, elem_limit=3, con_fidence=70):
     return final_list
 
 # Text  Detection Function
-def post_rekog(pic_json,elem_limit=3, con_fidence=70):
+def post_rekog(pic_json, con_fidence=70):
     # Getting list of image file names
     imageURL_list = pic_json.get("image_locations")
 
@@ -209,8 +210,6 @@ def post_rekog(pic_json,elem_limit=3, con_fidence=70):
             for text in textDetections:
                 if text['Confidence'] > con_fidence:
                     text_found.append(text['DetectedText'])
-#                     print(text['Confidence'])
-#             print(f'text_found: {text_found}')
             
             text_set = list(set(text_found))
 
@@ -239,12 +238,14 @@ def post_rekog(pic_json,elem_limit=3, con_fidence=70):
     # If 'final_list' is empty return and empty set instead
     if len(final_list) == 0:
         return {}
-    
+   
     # For long resulting lists get only 3! 
     # (new list length 3 will be random since it's originally a set turned to list)
-    if len(final_list) > elem_limit:
-        final_list = set(list(final_list)[:elem_limit])
-    
+    # if len(final_list) > elem_limit:
+    #     # turning set to a list sorted by string length
+    #     final_list = sorted(list(final_list), key=len)[-elem_limit:]
+    #     final_list = set(final_list)
+    # print('all detected text', all_text)
     return final_list
 
 # __________ M A I N ________________________
@@ -253,5 +254,5 @@ if __name__ == '__main__':
     #data = {"image_locations": ["https://raw.githubusercontent.com/ed-chin-git/ed-chin-git.github.io/master/sample_pill_image.jpg", ""]}
     #data = {"image_locations": ["https://s3.us-east-2.amazonaws.com/firstpythonbucketac60bb97-95e1-43e5-98e6-0ca294ec9aad/img2b.JPG",
     #                            "https://s3.us-east-2.amazonaws.com/firstpythonbucketac60bb97-95e1-43e5-98e6-0ca294ec9aad/img2b.JPG"]}
-    print(post_rekog(data,4,80))
+    print(post_rekog(data, 4, 80))
  
