@@ -11,10 +11,25 @@ load_dotenv()
 
 # ______query_from rekog __________
 def query_from_rekog(rekog_results):
-    if len(rekog_results) > 1:
-        results = [x for x in list(map(";".join, permutations(rekog_results)))]
-    else:
-        results = rekog_results
+    rekog_results = list(rekog_results)
+    rekog_results.sort(key=len, reverse=True)
+
+    results = []
+    for text_str in rekog_results:
+        # add text strings longer than 3
+        if len(text_str) > 3:
+            results.append(text_str)
+    #  Limit to only the top three
+    results = results[:3]
+    
+    
+    #   If no text_strings longer than 3 chars  
+    #   make permutations of the short strings
+    if results == []:
+        if len(rekog_results) > 1:
+            results = [x for x in list(map(";".join, permutations(rekog_results)))][:3]
+        else:
+            results = rekog_results
 
     total_results = []
     for result in results:
