@@ -20,7 +20,7 @@ phases:
       - printenv
   post_build:
     commands:
-      - ./venv/bin/gunicorn -b localhost:8000 application -D
+      - ./venv/bin/gunicorn -b 0.0.0.0:8000 application -D
       #- ./bash/find_gunicorn.sh
       - curl localhost:8000
       - ./bash/test_rekog.sh
