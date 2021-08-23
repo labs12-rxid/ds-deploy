@@ -135,7 +135,7 @@ jupyter_core==4.4.0
 jupyter_highlight_selected_word==0.2.0
 jupyter_latex_envs==1.4.4
 jupyter_nbextensions_configurator==0.4.0
-jupyterlab==0.35.3
+jupyterlab==1.2.21
 jupyterlab-code-formatter==0.2.0
 jupyterlab-dash==0.1.0a2
 jupyterlab_launcher==0.13.1
