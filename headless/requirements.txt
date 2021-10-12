@@ -187,7 +187,7 @@ oauth2client==4.1.2
 oauthlib==3.0.1
 odo==0.5.0
 olefile==0.46
-opencv-python==4.1.0.25
+opencv-python==4.2.0.32
 openpyxl==2.5.14
 packaging==19.0
 pandas==0.24.2
