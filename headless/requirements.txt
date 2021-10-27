@@ -60,7 +60,7 @@ dash-daq==0.1.4
 dash-html-components==0.15.0
 dash-renderer==0.22.0
 dash-table==3.6.0
-dask==1.1.1
+dask==2021.10.0
 databricks-cli==0.8.4
 datashape==0.5.2
 dautil==0.0.1b1
