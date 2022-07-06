@@ -153,7 +153,7 @@ line_profiler==2.1.2
 livereload==2.6.0
 llvmlite==0.27.0
 locket==0.2.0
-lxml==4.3.0
+lxml==4.9.1
 mako==1.0.7
 markdown==2.6.11
 markupsafe==1.1.1
