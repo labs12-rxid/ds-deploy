@@ -122,7 +122,7 @@ jedi==0.13.2
 jeepney==0.4
 jieba3k==0.35.1
 jinja2>=2.10.1
-joblib==0.13.1
+joblib==1.2.0
 jsonpickle==1.1
 jsonschema==2.6.0
 jupyter==1.0.0
