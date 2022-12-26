@@ -334,7 +334,7 @@ wcwidth==0.1.7
 webencodings==0.5.1
 werkzeug==0.14.1
 wget==3.2
-wheel==0.32.3
+wheel==0.38.1
 widgetsnbextension==3.4.2
 wrapt==1.11.1
 wsgigzip==0.1.4
